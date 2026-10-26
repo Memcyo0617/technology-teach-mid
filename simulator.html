@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投石戰車模擬實驗室 - 科技領域教材教法</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        
+        :root {
+            --wood-dark: #3e2716;
+            --wood-mid: #855327;
+            --wood-light: #edd3b1;
+            --accent-amber: #f59e0b;
+            --dark-bg: #0c1220;
+            --panel-bg: rgba(22, 32, 50, 0.94);
+        }
+
+        html {
+            font-size: 17px; /* 放大模擬遊戲基礎字體 */
+        }
+
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: var(--dark-bg);
+            color: #f8fafc;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(245, 158, 11, 0.1), transparent 35%),
+                radial-gradient(circle at 85% 80%, rgba(14, 165, 233, 0.08), transparent 35%),
+                linear-gradient(rgba(12, 18, 32, 0.9), rgba(12, 18, 32, 0.9)),
+                url('data:image/svg+xml;utf8,<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.06)"/></svg>');
+            overflow-x: hidden;
+        }
+
+        .tech-font { font-family: 'Share Tech Mono', monospace; }
+
+        .wood-panel {
+            background: var(--panel-bg);
+            border: 1px solid rgba(237, 211, 177, 0.3);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(237, 211, 177, 0.05);
+            backdrop-filter: blur(12px);
+        }
+
+        .btn-wood {
+            background: linear-gradient(135deg, #b07d4b 0%, #855327 100%);
+            border: 1px solid #edd3b1;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+            transition: all 0.2s ease;
+        }
+        .btn-wood:hover:not(:disabled) {
+            background: linear-gradient(135deg, #c58e57 0%, #9a6130 100%);
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+            transform: translateY(-1px);
+        }
+        .btn-wood:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        .btn-cyan {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            border: 1px solid #38bdf8;
+            color: #fff;
+            transition: all 0.2s ease;
+        }
+        .btn-cyan:hover:not(:disabled) {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            box-shadow: 0 0 16px rgba(14, 165, 233, 0.45);
+            transform: translateY(-1px);
+        }
+
+        /* 檔位選鈕樣式 */
+        .option-badge {
+            transition: all 0.15s ease;
+            font-size: 0.85rem;
+            padding-top: 0.45rem;
+            padding-bottom: 0.45rem;
+        }
+        .option-badge.active {
+            background: #f59e0b;
+            color: #1e1b18;
+            font-weight: 800;
+            border-color: #fbbf24;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.7);
+            transform: scale(1.05);
+        }
+
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent;
+        }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 22px; width: 22px;
+            border-radius: 50%;
+            background: #f59e0b;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 10px #f59e0b;
+            border: 2px solid #fff;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 7px;
+            cursor: pointer;
+            background: rgba(237, 211, 177, 0.28);
+            border-radius: 4px;
+        }
+
+        .canvas-grid {
+            background-color: #0b111e;
+            background-image: 
+                linear-gradient(rgba(245, 158, 11, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(245, 158, 11, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- START SCREEN 模式選擇入口畫面 (預設進入此畫面) -->
+    <div id="start-screen" class="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#090d18] bg-opacity-96 backdrop-blur-md px-4 py-8">
+        <div class="mb-4 text-center max-w-2xl">
+            <span class="inline-block px-4 py-1.5 bg-amber-900/60 text-amber-300 border border-amber-600/50 rounded-full text-xs sm:text-sm font-semibold tracking-wider mb-3">國小科技資訊教育教案成果</span>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-amber-400 tracking-wider mb-3">投石戰車模擬實驗室</h1>
+            <p class="text-amber-200/80 text-sm sm:text-base leading-relaxed">
+                以實體雷切木製投石車機構為原型，請先選擇要進行的實驗模式：
+            </p>
+        </div>
+
+        <!-- 雙模式選擇大卡片 (只保留模式一與模式二) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl px-4 mt-4">
+            <!-- 模式一：自由練習 -->
+            <div class="wood-panel p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer hover:border-amber-400 transition-all group hover:-translate-y-1.5 shadow-xl" onclick="startGame(1)">
+                <div class="w-16 h-16 rounded-full bg-amber-900/60 border-2 border-amber-500 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg">
+                    <span class="text-3xl font-black text-amber-300">1</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-black text-white mb-1.5 tracking-wide">模式一：自由練習模式</h2>
+                <div class="text-xs sm:text-sm text-amber-400 font-mono mb-3">PRACTICE / 參數自由探究</div>
+                <p class="text-sm text-slate-300 mb-6 leading-relaxed flex-grow">
+                    自由切換 <strong>5 檔發射仰角</strong>、<strong>6 檔力臂長度</strong>、橡皮筋拉力與乒乓球/木球。<br>
+                    對應教案「活動二：數位兵工廠」，找出讓球飛最遠或飛最高的最佳組合！
+                </p>
+                <button class="w-full btn-wood py-3.5 rounded-xl text-sm sm:text-base font-bold tracking-widest uppercase">
+                    進入自由練習
+                </button>
+            </div>
+            
+            <!-- 模式二：精準打擊賽 -->
+            <div class="wood-panel p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer hover:border-cyan-400 transition-all group hover:-translate-y-1.5 shadow-xl" onclick="startGame(2)">
+                <div class="w-16 h-16 rounded-full bg-cyan-900/60 border-2 border-cyan-400 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg">
+                    <span class="text-3xl font-black text-cyan-300">2</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-black text-white mb-1.5 tracking-wide">模式二：精準打擊賽</h2>
+                <div class="text-xs sm:text-sm text-cyan-400 font-mono mb-3">TARGET CHALLENGE / 套環挑戰</div>
+                <p class="text-sm text-slate-300 mb-6 leading-relaxed flex-grow">
+                    系統隨機指派特定目標靶區 (ZONE A~H)。<br>
+                    對應教案「活動四：精準打擊挑戰賽」，運用控制變因法與數據圖表，調整最佳參數精準命中目標！
+                </p>
+                <button class="w-full btn-cyan py-3.5 rounded-xl text-sm sm:text-base font-bold tracking-widest uppercase">
+                    開始目標挑戰
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <a href="index.html" class="inline-flex items-center gap-2 text-sm text-amber-300 hover:text-white transition-colors border border-amber-600/40 bg-amber-950/40 px-5 py-2.5 rounded-full shadow">
+                <span>←</span> 返回投石戰車教案首頁
+            </a>
+        </div>
+    </div>
+
+    <!-- GAME SCREEN 主遊戲畫面 -->
+    <div id="game-screen" class="hidden flex-col flex-grow p-4 md:p-6 w-full max-w-[1700px] mx-auto">
+        <!-- 頂端導航與資訊狀態列 -->
+        <header class="flex flex-wrap items-center justify-between gap-4 mb-4 bg-slate-900/90 border border-amber-700/40 rounded-xl px-5 py-3">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="inline-flex items-center gap-1.5 text-xs sm:text-sm text-amber-300 hover:text-amber-100 bg-amber-900/40 hover:bg-amber-900/70 border border-amber-600/50 px-3.5 py-1.5 rounded-lg transition-colors font-medium">
+                    <span>←</span> 返回教案主頁
+                </a>
+                <div class="h-4 w-px bg-slate-700"></div>
+                <div class="text-base sm:text-lg font-bold text-amber-400">投石戰車模擬器</div>
+                <span id="stat-mode-badge" class="px-3 py-1 rounded text-xs sm:text-sm font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">模式一：自由練習</span>
+            </div>
+
+            <!-- 即時數據指標 -->
+            <div class="flex items-center gap-5 text-sm font-mono">
+                <div class="flex items-center gap-2">
+                    <span class="text-slate-400">發射次數:</span>
+                    <span id="stat-launches" class="text-amber-300 font-bold text-base">0</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-slate-400">累積得分:</span>
+                    <span id="stat-score" class="text-green-400 font-bold text-base">0</span>
+                </div>
+                <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-700">
+                    <span class="text-slate-400">目標靶區:</span>
+                    <span class="text-amber-400 font-bold text-base">ZONE <span id="stat-target">C</span></span>
+                </div>
+                <button onclick="backToMenu()" class="text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 px-3 py-1.5 rounded-lg transition-colors ml-2">
+                    切換模式
+                </button>
+            </div>
+        </header>
+
+        <!-- 主體區域：左邊畫布，右邊控制面板 -->
+        <main class="flex flex-col lg:flex-row gap-5 flex-grow min-h-0">
+            <!-- 左側模擬物理畫布 -->
+            <section class="flex-grow flex flex-col min-w-0">
+                <div class="flex items-center justify-between mb-2 px-1">
+                    <div id="mode-instruction" class="text-sm font-medium text-amber-300 flex items-center gap-2">
+                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+                        <span>請調整右側機構參數，點擊「發射」進行測試！</span>
+                    </div>
+                    <div class="text-xs sm:text-sm text-slate-400 font-mono">
+                        力臂長度：<span id="disp-arm-cm" class="text-amber-300 font-bold">14 cm</span> ｜ 發射仰角：<span id="disp-angle-deg" class="text-amber-300 font-bold">50°</span>
+                    </div>
+                </div>
+
+                <div class="wood-panel rounded-2xl overflow-hidden relative canvas-grid flex-grow min-h-[480px] lg:min-h-[560px]">
+                    <canvas id="simCanvas" class="w-full h-full block absolute inset-0"></canvas>
+                    
+                    <!-- 畫布右上方實體圖提示浮窗 -->
+                    <div class="absolute top-4 right-4 bg-slate-900/95 border border-amber-600/40 rounded-xl p-3 max-w-[220px] text-xs pointer-events-none hidden md:block shadow-lg">
+                        <div class="font-bold text-amber-300 mb-1 flex items-center gap-1.5">
+                            <span>🪵</span> 實體雷切機構
+                        </div>
+                        <p class="text-slate-300 leading-relaxed">
+                            半圓弧板設有 10°~90° 卡槽，木質力臂設有 10~20cm 六檔孔位，精準重現組裝教具。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 畫布底部提示 -->
+                <div class="mt-2 text-xs sm:text-sm text-slate-400 flex flex-wrap items-center justify-between gap-2 px-1">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                        <span>黃插銷：半圓定位仰角 ｜ 綠箭頭：初速方向向量 ｜ 虛線：預覽軌跡</span>
+                    </div>
+                    <div class="text-slate-500 font-mono">重力加速度 g = 9.8 m/s²</div>
+                </div>
+            </section>
+
+            <!-- 右側控制面板 -->
+            <aside class="w-full lg:w-[370px] shrink-0 flex flex-col gap-4">
+                <div class="wood-panel rounded-2xl p-5 flex-grow flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-amber-500/20 pb-3 mb-4">
+                            <h3 class="text-base font-bold text-amber-400 tracking-wider flex items-center gap-2">
+                                <span>⚙️</span> 機構參數控制台
+                            </h3>
+                            <span class="text-xs text-amber-200/60 font-mono">CONTROLS</span>
+                        </div>
+
+                        <!-- 鎖定目標選擇器 (模式一使用) -->
+                        <div id="target-selector-container" class="mb-4">
+                            <label class="text-xs sm:text-sm text-slate-300 font-medium block mb-1.5">目標靶區選擇 (Target Zone)</label>
+                            <select id="input-target" class="w-full rounded-xl bg-slate-800/90 border border-amber-500/40 text-amber-300 p-2.5 text-sm font-mono focus:border-amber-400 focus:outline-none"></select>
+                        </div>
+
+                        <!-- 1. 角度調節：10, 30, 50, 70, 90 五種 -->
+                        <div class="mb-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-xs sm:text-sm text-slate-200 font-bold flex items-center gap-1.5">
+                                    <span>📐</span> 發射仰角卡槽 (5檔)
+                                </label>
+                                <span class="text-sm font-bold text-amber-400 font-mono" id="val-angle">50°</span>
+                            </div>
+                            <div class="grid grid-cols-5 gap-1.5" id="group-angle">
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400" data-val="10">10°</button>
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400" data-val="30">30°</button>
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400 active" data-val="50">50°</button>
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400" data-val="70">70°</button>
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400" data-val="90">90°</button>
+                            </div>
+                        </div>
+
+                        <!-- 2. 長度調節：10, 12, 14, 16, 18, 20 cm 六種 -->
+                        <div class="mb-5">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-xs sm:text-sm text-slate-200 font-bold flex items-center gap-1.5">
+                                    <span>📏</span> 力臂長度孔位 (6檔)
+                                </label>
+                                <span class="text-sm font-bold text-amber-400 font-mono" id="val-arm">14 cm</span>
+                            </div>
+                            <div class="grid grid-cols-6 gap-1" id="group-arm">
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400" data-val="10">10</button>
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400" data-val="12">12</button>
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400 active" data-val="14">14</button>
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400" data-val="16">16</button>
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400" data-val="18">18</button>
+                                <button type="button" class="option-badge rounded-lg border border-slate-600 bg-slate-800/80 text-slate-300 font-mono text-center hover:border-amber-400" data-val="20">20</button>
+                            </div>
+                            <div class="text-xs text-slate-400 mt-1.5 flex justify-between">
+                                <span>短臂 (10cm)</span>
+                                <span>單位: 公分 (2cm間隔)</span>
+                                <span>長臂 (20cm)</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. 橡皮筋充能拉力等級 -->
+                        <div class="mb-5">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="text-xs sm:text-sm text-slate-200 font-bold flex items-center gap-1.5">
+                                    <span>⚡</span> 橡皮筋充能拉力
+                                </label>
+                                <span class="text-sm font-bold text-amber-400 font-mono" id="val-tension">等級 3</span>
+                            </div>
+                            <input type="range" id="input-tension" min="1" max="5" step="1" value="3" class="w-full">
+                            <div class="flex justify-between text-xs text-slate-400 mt-1.5">
+                                <span>單條微拉 (1)</span>
+                                <span>標準備戰 (3)</span>
+                                <span>雙條緊繃 (5)</span>
+                            </div>
+                        </div>
+
+                        <!-- 4. 拋射球材質 (依使用者要求：只保留「乒乓球」與「木球」兩種) -->
+                        <div class="mb-5">
+                            <label class="text-xs sm:text-sm text-slate-200 font-bold block mb-2">
+                                <span>🎾</span> 拋射物體材質（教案指定二分法）
+                            </label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="mass" value="20" checked class="sr-only peer">
+                                    <div class="border border-slate-700 bg-slate-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-500/25 peer-checked:text-amber-200 rounded-xl p-3 text-center transition-all shadow">
+                                        <div class="text-sm font-bold">乒乓球</div>
+                                        <div class="text-xs text-slate-400 font-mono mt-1">20g (輕質物)</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="mass" value="50" class="sr-only peer">
+                                    <div class="border border-slate-700 bg-slate-800/80 peer-checked:border-amber-400 peer-checked:bg-amber-500/25 peer-checked:text-amber-200 rounded-xl p-3 text-center transition-all shadow">
+                                        <div class="text-sm font-bold">木球</div>
+                                        <div class="text-xs text-slate-400 font-mono mt-1">50g (重質物)</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 發射按鈕與數據結果 -->
+                    <div>
+                        <button id="btn-launch" class="w-full btn-wood font-black py-3.5 rounded-xl tracking-wider text-base flex items-center justify-center gap-2 mb-3.5 shadow-lg">
+                            <span>🚀</span> FIRE！釋放發射
+                        </button>
+
+                        <!-- 即時物理計算數據 -->
+                        <div class="grid grid-cols-2 gap-2 bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                            <div class="border border-slate-800 bg-slate-950/60 rounded-lg p-2">
+                                <div class="text-[10px] text-slate-400 font-mono">拋出初速 (v₀)</div>
+                                <div class="text-sm font-bold text-amber-300 font-mono" id="res-v0">0.0 m/s</div>
+                            </div>
+                            <div class="border border-slate-800 bg-slate-950/60 rounded-lg p-2">
+                                <div class="text-[10px] text-slate-400 font-mono">滯空時間 (t)</div>
+                                <div class="text-sm font-bold text-cyan-300 font-mono" id="res-time">0.00 s</div>
+                            </div>
+                            <div class="border border-slate-800 bg-slate-950/60 rounded-lg p-2">
+                                <div class="text-[10px] text-slate-400 font-mono">最大飛行高度</div>
+                                <div class="text-sm font-bold text-amber-300 font-mono" id="res-height">0.0 m</div>
+                            </div>
+                            <div class="border border-slate-800 bg-slate-950/60 rounded-lg p-2">
+                                <div class="text-[10px] text-slate-400 font-mono">實測拋射距離</div>
+                                <div class="text-sm font-bold text-green-400 font-mono" id="res-dist">0.0 m</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- 自訂訊息彈窗 -->
+    <div id="msgModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex flex-col items-center justify-center z-50 opacity-0 transition-opacity duration-300 p-4">
+        <div class="wood-panel max-w-sm w-full rounded-2xl p-6 transform scale-95 transition-transform duration-300 border-2" id="msgModalContent">
+            <h3 class="text-xl font-bold tracking-wider mb-2 text-center" id="msgTitle">測試反饋</h3>
+            <p class="text-slate-200 text-sm mb-4 text-center leading-relaxed" id="msgText">訊息內容</p>
+            <div id="msgScoreDetails" class="hidden text-xs sm:text-sm mb-5 bg-slate-900/80 p-3.5 rounded-xl border border-slate-700 leading-normal"></div>
+            <button id="btn-close-msg" class="w-full btn-wood py-3 rounded-xl text-sm font-bold tracking-wider">確認並繼續</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const GRAVITY = 9.8;
+        const PIXELS_PER_METER = 16; 
+        const CANNON_BASE_X = 150; 
+        
+        // 標靶區域 (米)
+        const ZONES = {
+            'A': { start: 10, end: 15, pts: 10 },
+            'B': { start: 15, end: 20, pts: 20 },
+            'C': { start: 20, end: 25, pts: 30 },
+            'D': { start: 25, end: 30, pts: 40 },
+            'E': { start: 30, end: 35, pts: 50 },
+            'F': { start: 35, end: 40, pts: 60 },
+            'G': { start: 40, end: 45, pts: 70 },
+            'H': { start: 45, end: 50, pts: 80 }
+        };
+        const ZONE_KEYS = Object.keys(ZONES);
+
+        const ANGLES_LIST = [10, 30, 50, 70, 90];
+        const ARMS_CM_LIST = [10, 12, 14, 16, 18, 20];
+        const ARM_CM_TO_PHYSICS = {
+            10: 1.0,
+            12: 1.25,
+            14: 1.5,
+            16: 1.75,
+            18: 2.0,
+            20: 2.25
+        };
+
+        let gameState = {
+            mode: 0, 
+            launches: 0,
+            score: 0,
+            isAnimating: false,
+            swinging: false,
+            swingProgress: 0,
+            animTime: 0
+        };
+
+        let physicsState = {
+            armCm: 14,
+            arm: 1.5,
+            angle: 50,
+            tension: 3,
+            mass: 20, // 預設乒乓球 20g
+            target: 'C'
+        };
+
+        const UI = {
+            screens: { start: document.getElementById('start-screen'), game: document.getElementById('game-screen') },
+            inputs: {
+                target: document.getElementById('input-target'),
+                tension: document.getElementById('input-tension'),
+                masses: document.querySelectorAll('input[name="mass"]')
+            },
+            groups: {
+                angleBtns: document.querySelectorAll('#group-angle button'),
+                armBtns: document.querySelectorAll('#group-arm button')
+            },
+            displays: {
+                modeBadge: document.getElementById('stat-mode-badge'),
+                instruction: document.getElementById('mode-instruction'),
+                target: document.getElementById('stat-target'),
+                launches: document.getElementById('stat-launches'),
+                score: document.getElementById('stat-score'),
+                arm: document.getElementById('val-arm'),
+                angle: document.getElementById('val-angle'),
+                tension: document.getElementById('val-tension'),
+                dispArmCm: document.getElementById('disp-arm-cm'),
+                dispAngleDeg: document.getElementById('disp-angle-deg')
+            },
+            results: {
+                v0: document.getElementById('res-v0'),
+                time: document.getElementById('res-time'),
+                height: document.getElementById('res-height'),
+                dist: document.getElementById('res-dist')
+            },
+            btnLaunch: document.getElementById('btn-launch')
+        };
+
+        // 初始化目標下拉選單
+        ZONE_KEYS.forEach(key => {
+            let opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = `ZONE ${key} (${ZONES[key].start}m - ${ZONES[key].end}m)`;
+            UI.inputs.target.appendChild(opt);
+        });
+
+        // 角度按鈕點擊 (10, 30, 50, 70, 90)
+        UI.groups.angleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = parseInt(btn.getAttribute('data-val'));
+                physicsState.angle = val;
+                UI.displays.angle.textContent = val + '°';
+                UI.displays.dispAngleDeg.textContent = val + '°';
+                UI.groups.angleBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                draw();
+            });
+        });
+
+        // 臂長按鈕點擊 (10, 12, 14, 16, 18, 20 cm)
+        UI.groups.armBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cm = parseInt(btn.getAttribute('data-val'));
+                physicsState.armCm = cm;
+                physicsState.arm = ARM_CM_TO_PHYSICS[cm];
+                UI.displays.arm.textContent = cm + ' cm';
+                UI.displays.dispArmCm.textContent = cm + ' cm';
+                UI.groups.armBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                draw();
+            });
+        });
+
+        // 橡皮筋拉力滑桿
+        UI.inputs.tension.addEventListener('input', (e) => {
+            physicsState.tension = parseInt(e.target.value);
+            UI.displays.tension.textContent = '等級 ' + physicsState.tension;
+            draw();
+        });
+
+        // 目標選擇切換
+        UI.inputs.target.addEventListener('change', (e) => {
+            physicsState.target = e.target.value;
+            updateTargetUI();
+            draw();
+        });
+
+        // 球體材質單選 (只有乒乓球 20g 與 木球 50g)
+        UI.inputs.masses.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if(e.target.checked) {
+                    physicsState.mass = parseInt(e.target.value);
+                    draw();
+                }
+            });
+        });
+
+        UI.btnLaunch.addEventListener('click', launchProjectile);
+
+        function resizeCanvas() {
+            if(gameState.mode === 0) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            draw();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        // 訊息彈窗
+        const modal = document.getElementById('msgModal');
+        const modalContent = document.getElementById('msgModalContent');
+        const msgScoreDetails = document.getElementById('msgScoreDetails');
+        
+        function showMessage(title, text, type = 'info', extraDetailsHTML = '') {
+            document.getElementById('msgTitle').textContent = title;
+            document.getElementById('msgText').innerHTML = text; 
+            
+            if (type === 'success') {
+                modalContent.style.borderColor = 'rgba(34, 197, 94, 0.7)';
+                document.getElementById('msgTitle').style.color = '#4ade80';
+            } else if (type === 'error') {
+                modalContent.style.borderColor = 'rgba(239, 68, 68, 0.7)';
+                document.getElementById('msgTitle').style.color = '#f87171';
+            } else {
+                modalContent.style.borderColor = 'rgba(245, 158, 11, 0.7)';
+                document.getElementById('msgTitle').style.color = '#fbbf24';
+            }
+
+            if(extraDetailsHTML) {
+                msgScoreDetails.innerHTML = extraDetailsHTML;
+                msgScoreDetails.classList.remove('hidden');
+            } else {
+                msgScoreDetails.classList.add('hidden');
+            }
+
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+            }, 10);
+        }
+
+        document.getElementById('btn-close-msg').addEventListener('click', () => {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => { modal.style.display = 'none'; }, 250);
+            
+            if (gameState.mode === 2) assignRandomTarget();
+        });
+
+        function backToMenu() {
+            gameState.isAnimating = false;
+            gameState.swinging = false;
+            UI.btnLaunch.disabled = false; 
+            
+            UI.screens.game.classList.add('hidden');
+            UI.screens.game.classList.remove('flex');
+            UI.screens.start.classList.remove('hidden');
+            gameState.mode = 0;
+        }
+
+        // 開始遊戲 (依使用者點選進入)
+        function startGame(mode) {
+            gameState.mode = mode;
+            gameState.launches = 0;
+            gameState.score = 0;
+            UI.displays.launches.textContent = '0';
+            UI.displays.score.textContent = '0';
+            
+            UI.screens.start.classList.add('hidden');
+            UI.screens.game.classList.remove('hidden');
+            UI.screens.game.classList.add('flex');
+            
+            UI.inputs.target.disabled = false;
+            
+            if (mode === 1) {
+                UI.displays.modeBadge.textContent = '模式一：自由練習';
+                UI.displays.instruction.innerHTML = '<span>🎯 模式一：可自由配置角度與臂長，試驗乒乓球與木球的拋射極限！</span>';
+                physicsState.target = 'C';
+                UI.inputs.target.value = 'C';
+            } else if (mode === 2) {
+                UI.displays.modeBadge.textContent = '模式二：精準打擊賽';
+                UI.displays.instruction.innerHTML = '<span>🎯 模式二：目標靶區已隨機指定！請微調長度與仰角命中目標！</span>';
+                UI.inputs.target.disabled = true;
+                assignRandomTarget();
+            }
+
+            updateTargetUI();
+            setTimeout(() => { resizeCanvas(); }, 80);
+        }
+
+        function assignRandomTarget() {
+            const randomKey = ZONE_KEYS[Math.floor(Math.random() * ZONE_KEYS.length)];
+            physicsState.target = randomKey;
+            UI.inputs.target.value = randomKey;
+            updateTargetUI();
+            draw();
+        }
+
+        function updateTargetUI() {
+            UI.displays.target.textContent = physicsState.target;
+        }
+
+        // 取得物理變數與幾何座標
+        function getPhysicsVars(overrideArmRad = null) {
+            const groundY = canvas.height - 65;
+            const pivotX = CANNON_BASE_X;
+            const pivotY = groundY - 95; 
+            const armLenPx = 45 + physicsState.arm * 28; 
+            
+            const releaseAngleRad = physicsState.angle * Math.PI / 180;
+            const releaseArmRad = Math.PI + releaseAngleRad; 
+            
+            const loadedArmRad = Math.PI - 0.28; 
+
+            let currentArmRad = loadedArmRad;
+            if (overrideArmRad !== null) {
+                currentArmRad = overrideArmRad;
+            } else if (gameState.isAnimating && !gameState.swinging) {
+                currentArmRad = releaseArmRad;
+            }
+
+            const cupX = pivotX + Math.cos(currentArmRad) * armLenPx;
+            const cupY = pivotY + Math.sin(currentArmRad) * armLenPx; 
+            
+            const x0 = pivotX + Math.cos(releaseArmRad) * armLenPx; 
+            const y0 = pivotY + Math.sin(releaseArmRad) * armLenPx; 
+            
+            const baseEnergy = physicsState.tension * 430;
+            const v0 = Math.sqrt(baseEnergy / physicsState.mass) * (1.1 + physicsState.arm * 0.45);
+            
+            return { 
+                groundY, pivotX, pivotY, armLenPx, 
+                loadedArmRad, releaseArmRad, currentArmRad, cupX, cupY,
+                releaseAngleRad, x0, y0, v0, 
+                vx: v0 * Math.cos(releaseAngleRad), 
+                vy: v0 * Math.sin(releaseAngleRad) 
+            };
+        }
+
+        // 繪製畫布（重現照片中雷切木製投石車外觀）
+        function draw(overrideArmRad = null) {
+            if(!canvas.width) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const vars = getPhysicsVars(overrideArmRad);
+
+            // 1. 地面線
+            ctx.beginPath();
+            ctx.moveTo(0, vars.groundY);
+            ctx.lineTo(canvas.width, vars.groundY);
+            ctx.strokeStyle = '#edd3b1';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // 2. 目標靶區 ZONE A~H
+            ctx.font = "bold 13px 'Share Tech Mono', sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ZONE_KEYS.forEach(key => {
+                const zone = ZONES[key];
+                const pxStart = CANNON_BASE_X + zone.start * PIXELS_PER_METER;
+                const pxWidth = (zone.end - zone.start) * PIXELS_PER_METER;
+                const isTarget = (key === physicsState.target);
+                
+                ctx.fillStyle = isTarget ? 'rgba(245, 158, 11, 0.3)' : 'rgba(255, 255, 255, 0.04)';
+                ctx.fillRect(pxStart, vars.groundY, pxWidth, 14);
+                
+                ctx.strokeStyle = isTarget ? '#fbbf24' : 'rgba(237, 211, 177, 0.3)';
+                ctx.lineWidth = isTarget ? 2 : 1;
+                ctx.strokeRect(pxStart, vars.groundY, pxWidth, 14);
+
+                ctx.fillStyle = isTarget ? '#fbbf24' : 'rgba(237, 211, 177, 0.7)';
+                ctx.fillText(`ZONE ${key}`, pxStart + pxWidth/2, vars.groundY + 28);
+                ctx.font = "11px 'Share Tech Mono', sans-serif";
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.fillText(`${zone.start}-${zone.end}m`, pxStart + pxWidth/2, vars.groundY + 44);
+                ctx.font = "bold 13px 'Share Tech Mono', sans-serif";
+            });
+
+            const pivotX = vars.pivotX;
+            const pivotY = vars.pivotY;
+
+            // 3. 【底座 Base】
+            ctx.fillStyle = '#b07d4b';
+            ctx.strokeStyle = '#5c3a21';
+            ctx.lineWidth = 2;
+            ctx.fillRect(pivotX - 60, vars.groundY - 14, 120, 14);
+            ctx.strokeRect(pivotX - 60, vars.groundY - 14, 120, 14);
+            ctx.fillStyle = '#d4a373';
+            ctx.fillRect(pivotX - 45, vars.groundY - 22, 90, 8);
+            ctx.strokeRect(pivotX - 45, vars.groundY - 22, 90, 8);
+
+            // 4. 【立柱主體】
+            const pillarWidth = 38;
+            const pillarHeight = (vars.groundY - 22) - pivotY;
+            ctx.fillStyle = '#edd3b1';
+            ctx.strokeStyle = '#855327';
+            ctx.lineWidth = 2;
+            ctx.fillRect(pivotX - pillarWidth/2, pivotY, pillarWidth, pillarHeight);
+            ctx.strokeRect(pivotX - pillarWidth/2, pivotY, pillarWidth, pillarHeight);
+
+            // 立柱固定木栓插銷
+            ctx.beginPath();
+            ctx.arc(pivotX, pivotY + 30, 4.5, 0, Math.PI*2);
+            ctx.fillStyle = '#855327';
+            ctx.fill();
+            ctx.stroke();
+
+            // 5. 【頂部半圓弧卡槽盤】
+            const arcRadius = 42;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(pivotX, pivotY, arcRadius, Math.PI, 0, false);
+            ctx.lineTo(pivotX + arcRadius, pivotY + 8);
+            ctx.lineTo(pivotX - arcRadius, pivotY + 8);
+            ctx.closePath();
+            ctx.fillStyle = '#f5e2cb';
+            ctx.fill();
+            ctx.strokeStyle = '#855327';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 5 檔卡槽孔洞 (10°, 30°, 50°, 70°, 90°)
+            ANGLES_LIST.forEach(deg => {
+                const angleRad = deg * Math.PI / 180;
+                const holeX = pivotX + Math.cos(Math.PI + angleRad) * (arcRadius - 10);
+                const holeY = pivotY + Math.sin(Math.PI + angleRad) * (arcRadius - 10);
+                
+                const isCurrentAngle = (deg === physicsState.angle);
+
+                ctx.beginPath();
+                ctx.arc(holeX, holeY, 4, 0, Math.PI * 2);
+                ctx.fillStyle = isCurrentAngle ? '#f59e0b' : '#5c3a21';
+                ctx.fill();
+                ctx.strokeStyle = isCurrentAngle ? '#fff' : '#b07d4b';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                if (isCurrentAngle) {
+                    ctx.beginPath();
+                    ctx.arc(holeX, holeY, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.fill();
+                    ctx.strokeStyle = '#2a1b0e';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                }
+            });
+            ctx.restore();
+
+            // 6. 【橡皮筋拉力線】
+            const shortArmLen = 22;
+            const shortArmX = pivotX - Math.cos(vars.currentArmRad) * shortArmLen;
+            const shortArmY = pivotY - Math.sin(vars.currentArmRad) * shortArmLen;
+            const tensionAnchorX = pivotX + 16;
+            const tensionAnchorY = vars.groundY - 22;
+
+            ctx.beginPath();
+            ctx.moveTo(shortArmX, shortArmY);
+            ctx.lineTo(tensionAnchorX, tensionAnchorY);
+            ctx.strokeStyle = '#e11d48'; 
+            ctx.lineWidth = 2 + physicsState.tension * 1.2;
+            ctx.stroke();
+
+            // 7. 【投石臂】
+            ctx.save();
+            ctx.translate(pivotX, pivotY);
+            ctx.rotate(vars.currentArmRad);
+
+            const armThickness = 12;
+            const totalArmLen = vars.armLenPx;
+            ctx.fillStyle = '#d4a373';
+            ctx.strokeStyle = '#5c3a21';
+            ctx.lineWidth = 1.8;
+            ctx.fillRect(-shortArmLen, -armThickness/2, totalArmLen + shortArmLen, armThickness);
+            ctx.strokeRect(-shortArmLen, -armThickness/2, totalArmLen + shortArmLen, armThickness);
+
+            // 臂上的 6 個長度調節孔洞 (10, 12, 14, 16, 18, 20 cm)
+            ARMS_CM_LIST.forEach((cm, idx) => {
+                const holeDist = 20 + idx * 11;
+                if (holeDist < totalArmLen - 8) {
+                    const isSelected = (cm === physicsState.armCm);
+                    ctx.beginPath();
+                    ctx.arc(holeDist, 0, 3, 0, Math.PI*2);
+                    ctx.fillStyle = isSelected ? '#fbbf24' : '#4a2f1a';
+                    ctx.fill();
+                    ctx.strokeStyle = isSelected ? '#fff' : '#855327';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            });
+
+            // 末端投石勺
+            ctx.beginPath();
+            ctx.arc(totalArmLen, -armThickness/2, 12, 0, Math.PI, true);
+            ctx.fillStyle = '#b07d4b';
+            ctx.fill();
+            ctx.strokeStyle = '#5c3a21';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.restore();
+
+            // 8. 【旋轉軸心】
+            ctx.beginPath();
+            ctx.arc(pivotX, pivotY, 7, 0, Math.PI*2);
+            ctx.fillStyle = '#5c3a21';
+            ctx.fill();
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 9. 繪製球體
+            if (!gameState.isAnimating || gameState.swinging) {
+                drawBall(vars.cupX, vars.cupY - 4);
+            }
+
+            // 10. 仰角指引與軌跡預覽
+            if(!gameState.isAnimating) {
+                drawAngleGuide(vars);
+                drawPreviewTrajectory(vars);
+            }
+        }
+
+        // 繪製球體 (乒乓球 20g 或 木球 50g)
+        function drawBall(x, y) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x, y, 7, 0, Math.PI * 2);
+            if (physicsState.mass === 20) {
+                // 乒乓球 (亮白橘色)
+                ctx.fillStyle = '#fed7aa';
+                ctx.strokeStyle = '#ea580c';
+            } else {
+                // 木球 (原木木紋色)
+                ctx.fillStyle = '#b07d4b';
+                ctx.strokeStyle = '#5c3a21';
+            }
+            ctx.lineWidth = 2;
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // 角度指引線
+        function drawAngleGuide(vars) {
+            ctx.save();
+            const angleRad = physicsState.angle * Math.PI / 180;
+            
+            ctx.beginPath();
+            ctx.strokeStyle = '#22c55e';
+            ctx.lineWidth = 2;
+            const arrowLen = 50;
+            const endX = vars.x0 + Math.cos(angleRad) * arrowLen;
+            const endY = vars.y0 - Math.sin(angleRad) * arrowLen;
+            ctx.moveTo(vars.x0, vars.y0);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.moveTo(vars.x0, vars.y0);
+            ctx.lineTo(vars.x0 + 60, vars.y0);
+            ctx.stroke();
+
+            ctx.fillStyle = '#4ade80';
+            ctx.font = "bold 13px 'Share Tech Mono', sans-serif";
+            ctx.fillText(`θ = ${physicsState.angle}°`, vars.x0 + 40, vars.y0 - 15);
+            ctx.restore();
+        }
+
+        // 預覽軌跡
+        function drawPreviewTrajectory(vars) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.setLineDash([4, 6]);
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.6)';
+            ctx.lineWidth = 2;
+
+            let t = 0;
+            ctx.moveTo(vars.x0, vars.y0);
+            while(t < 0.45) { 
+                t += 0.04;
+                const x = vars.x0 + vars.vx * t * PIXELS_PER_METER;
+                const y = vars.y0 - (vars.vy * t - 0.5 * GRAVITY * t * t) * PIXELS_PER_METER;
+                if (y > vars.groundY) break;
+                ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // 發射主程序
+        function launchProjectile() {
+            if (gameState.isAnimating) return;
+            gameState.isAnimating = true;
+            gameState.swinging = true;
+            gameState.swingProgress = 0;
+            gameState.animTime = 0;
+            gameState.launches++;
+            UI.displays.launches.textContent = gameState.launches;
+            UI.btnLaunch.disabled = true;
+
+            const vars = getPhysicsVars();
+            const yOffset = (vars.groundY - vars.y0) / PIXELS_PER_METER; 
+            const tTotal = (vars.vy + Math.sqrt(Math.max(0, vars.vy*vars.vy + 2*GRAVITY*yOffset))) / GRAVITY;
+            const dMax = vars.vx * tTotal;
+            const hMax = (vars.vy * vars.vy) / (2 * GRAVITY) + yOffset;
+            const dMaxFromBase = dMax + (vars.x0 - CANNON_BASE_X) / PIXELS_PER_METER;
+
+            UI.results.v0.textContent = vars.v0.toFixed(1) + ' m/s';
+            UI.results.time.textContent = tTotal.toFixed(2) + ' s';
+            UI.results.height.textContent = hMax.toFixed(1) + ' m';
+            UI.results.dist.textContent = dMaxFromBase.toFixed(1) + ' m';
+
+            // 階段一：甩動動畫
+            function swingLoop() {
+                if(!gameState.isAnimating) return; 
+
+                gameState.swingProgress += 0.07 + (physicsState.tension * 0.02); 
+                
+                if (gameState.swingProgress >= 1) {
+                    gameState.swingProgress = 1;
+                    gameState.swinging = false; 
+                    requestAnimationFrame(flightLoop); 
+                    return;
+                }
+                
+                const currentRad = vars.loadedArmRad + (vars.releaseArmRad - vars.loadedArmRad) * gameState.swingProgress;
+                draw(currentRad); 
+                requestAnimationFrame(swingLoop);
+            }
+
+            // 階段二：拋物線飛行動畫
+            function flightLoop() {
+                if(!gameState.isAnimating) return; 
+
+                gameState.animTime += 0.035; 
+                const x = vars.x0 + vars.vx * gameState.animTime * PIXELS_PER_METER;
+                const y = vars.y0 - (vars.vy * gameState.animTime - 0.5 * GRAVITY * gameState.animTime * gameState.animTime) * PIXELS_PER_METER;
+                
+                draw();
+                drawBall(x, y);
+
+                ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                const pT = Math.max(0, gameState.animTime - 0.08);
+                const pX = vars.x0 + vars.vx * pT * PIXELS_PER_METER;
+                const pY = vars.y0 - (vars.vy * pT - 0.5 * GRAVITY * pT * pT) * PIXELS_PER_METER;
+                ctx.lineTo(pX, pY);
+                ctx.stroke();
+
+                if (y >= vars.groundY) {
+                    gameState.isAnimating = false;
+                    UI.btnLaunch.disabled = false;
+                    evaluateHit(dMaxFromBase);
+                    draw(); 
+                } else if (x > canvas.width + 60) {
+                    gameState.isAnimating = false;
+                    UI.btnLaunch.disabled = false;
+                    showMessage("超出射程邊界", "球體拋射超出目前場地觀測範圍！", "error");
+                    draw();
+                } else {
+                    requestAnimationFrame(flightLoop);
+                }
+            }
+            
+            requestAnimationFrame(swingLoop);
+        }
+
+        // 命中結算
+        function evaluateHit(distMeters) {
+            let hitZone = null;
+            for (let key of ZONE_KEYS) {
+                if (distMeters >= ZONES[key].start && distMeters <= ZONES[key].end) {
+                    hitZone = key; 
+                    break;
+                }
+            }
+
+            const targetKey = physicsState.target;
+            const isHit = (hitZone === targetKey);
+            
+            if (!isHit) {
+                showMessage("未命中目標！", `發射落點約在 <strong>${distMeters.toFixed(1)} 公尺</strong>（${hitZone ? 'ZONE ' + hitZone : '靶區外'}），未能落入指定的 <strong>ZONE ${targetKey}</strong>。請微調臂長或仰角！`, "error");
+                return;
+            }
+
+            let ptsEarned = ZONES[targetKey].pts;
+            let ballName = physicsState.mass === 20 ? '乒乓球' : '木球';
+            let detailHTML = `
+                <div class="text-green-400 font-bold mb-1">🎯 命中目標 ZONE ${targetKey}（${ZONES[targetKey].start}~${ZONES[targetKey].end}m）！</div>
+                <div>使用材質：${ballName} (${physicsState.mass}g)</div>
+                <div class="text-amber-400 font-bold mt-1">基礎得分：+${ptsEarned} 分</div>
+            `;
+
+            gameState.score += ptsEarned;
+            UI.displays.score.textContent = gameState.score;
+            showMessage("🎉 恭喜命中！", `成功將球體拋入指定區域！`, "success", detailHTML);
+        }
+
+        // 初始載入時：維持在 start-screen 模式選擇入口！(不主動呼叫 startGame)
+    </script>
+</body>
+</html>

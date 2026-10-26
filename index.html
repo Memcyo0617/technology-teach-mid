@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>投石戰車 - 國小科技資訊教育教案網</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --wood-dark: #3e2716;
+      --wood-mid: #855327;
+      --wood-warm: #b07d4b;
+      --wood-light: #f5e8d5;
+      --wood-bg: #fbf7f0;
+      --wood-card: #ffffff;
+      --accent-gold: #d97706;
+      --accent-orange: #ea580c;
+      --accent-green: #15803d;
+      --accent-blue: #0284c7;
+      --text-main: #261a12;
+      --text-muted: #614a3b;
+      --border-wood: #e7d8c5;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 18px; /* 全站大字體設定 */
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: var(--wood-bg);
+      color: var(--text-main);
+      line-height: 1.8;
+      letter-spacing: 0.01em;
+    }
+
+    .tech-font {
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    /* 置頂導覽列 */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(62, 39, 22, 0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid #b07d4b;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .nav-item {
+      position: relative;
+      color: #f1ddc4;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      color: #ffffff;
+      background: rgba(176, 125, 75, 0.45);
+    }
+
+    /* 區塊卡片美化 */
+    .content-card {
+      background: #ffffff;
+      border: 1px solid var(--border-wood);
+      border-radius: 1.25rem;
+      box-shadow: 0 4px 20px rgba(74, 47, 26, 0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .content-card:hover {
+      box-shadow: 0 8px 30px rgba(74, 47, 26, 0.1);
+    }
+
+    .section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.95rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .table-custom th {
+      background-color: #f3e8db;
+      color: #4a2f1a;
+      font-weight: 700;
+      border: 1px solid #e2cfbb;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.95rem;
+    }
+
+    .table-custom td {
+      border: 1px solid #e8dcce;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.95rem;
+      vertical-align: top;
+      line-height: 1.7;
+    }
+
+    .table-custom tr:nth-child(even) td {
+      background-color: #faf6f0;
+    }
+
+    /* 與全站木質風格完全協調一致的下載卡片 */
+    .download-card-wood {
+      background: #ffffff;
+      border: 1px solid #e4d3c0;
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(74, 47, 26, 0.04);
+      transition: all 0.2s ease;
+    }
+    .download-card-wood:hover {
+      border-color: #b07d4b;
+      box-shadow: 0 6px 20px rgba(176, 125, 75, 0.15);
+      transform: translateY(-2px);
+    }
+
+    /* 課程架構卡片專用 */
+    .framework-card {
+      background: #ffffff;
+      border-radius: 1.1rem;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
+    }
+    .framework-card:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- ================= 畫面置頂導覽列 (Sticky Navigation Bar) ================= -->
+  <nav class="sticky-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo / 教案名稱 -->
+        <a href="#hero" class="flex items-center gap-3 text-amber-200 hover:text-white transition-colors">
+          <span class="text-3xl">🪵</span>
+          <div>
+            <div class="font-black text-xl tracking-wider text-amber-100 flex items-center gap-2">
+              投石戰車
+              <span class="text-xs bg-amber-700/70 text-amber-200 px-2.5 py-0.5 rounded-full font-mono">STEAM教案</span>
+            </div>
+            <div class="text-xs text-amber-300/80">科技領域教材教法成果</div>
+          </div>
+        </a>
+
+        <!-- 導覽連結 (以教案大標題為選項設計) -->
+        <div class="hidden lg:flex items-center gap-1 xl:gap-2">
+          <a href="#overview" class="nav-item">一. 教案概述</a>
+          <a href="#matrix" class="nav-item">二. 雙向細目表</a>
+          <a href="#evaluation" class="nav-item">三. 評量根據</a>
+          <a href="#framework" class="nav-item">四. 設計架構</a>
+          <a href="#activities" class="nav-item">五. 教學活動</a>
+          <a href="#feedback" class="nav-item">六. 成果與回饋</a>
+          <a href="#appendix" class="nav-item">七. 附錄下載</a>
+        </div>
+
+        <!-- 預留給模擬遊戲的醒目入口 -->
+        <div class="flex items-center gap-3">
+          <a href="simulator.html" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 border border-amber-300/50">
+            <span>🎮</span>
+            <span>啟動模擬遊戲</span>
+            <span class="hidden sm:inline text-xs bg-black/25 px-2 py-0.5 rounded">全螢幕體驗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 行動裝置水平捲動選單 -->
+    <div class="lg:hidden flex overflow-x-auto px-4 py-2.5 gap-1.5 border-t border-amber-900/50 bg-black/25">
+      <a href="#overview" class="nav-item text-xs">教案概述</a>
+      <a href="#matrix" class="nav-item text-xs">雙向細目表</a>
+      <a href="#evaluation" class="nav-item text-xs">評量根據</a>
+      <a href="#framework" class="nav-item text-xs">課程架構</a>
+      <a href="#activities" class="nav-item text-xs">教學活動</a>
+      <a href="#feedback" class="nav-item text-xs">教學回饋</a>
+      <a href="#appendix" class="nav-item text-xs">附錄下載</a>
+    </div>
+  </nav>
+
+  <!-- ================= HERO 封面區塊 (依需求：只留右邊圖片並更改圖說) ================= -->
+  <header id="hero" class="relative overflow-hidden bg-gradient-to-b from-[#3e2716] via-[#52341e] to-[#6b4224] text-white py-16 md:py-24 px-4">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- 左側主標題與介紹 -->
+        <div class="lg:col-span-7 space-y-5">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-500/25 text-amber-300 border border-amber-500/40 rounded-full text-xs sm:text-sm font-semibold">
+            <span>國小六年級 跨學科科技資訊教育整合教案</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-amber-100 tracking-wide leading-tight">
+            投石戰車：機械機構與數位模擬的拋射實踐
+          </h1>
+          <p class="text-amber-200/90 text-base md:text-lg leading-relaxed">
+            以雷切自製木質投石機為載體，結合「實體動手組裝」與「數位電腦模擬」。引導六年級學生在 5 檔發射仰角、6 檔力臂長度與多材質拋射中，探索彈性位能、槓桿原理與運算思維。
+          </p>
+
+          <!-- 快速行動按鈕 (包含啟動模擬遊戲入口) -->
+          <div class="flex flex-wrap gap-3.5 pt-2">
+            <a href="simulator.html" target="_blank" class="px-5 py-3 rounded-xl text-sm md:text-base font-bold bg-amber-500 hover:bg-amber-400 text-stone-900 transition-colors shadow-md flex items-center gap-2">
+              <span>🎮</span> 啟動電腦模擬實驗室
+            </a>
+            <a href="#activities" class="px-5 py-3 rounded-xl text-sm md:text-base font-bold bg-stone-800/90 hover:bg-stone-800 text-amber-200 border border-amber-500/50 transition-colors shadow-md">
+              📖 瀏覽教學活動步驟
+            </a>
+            <a href="#appendix" class="px-5 py-3 rounded-xl text-sm md:text-base font-bold bg-cyan-700/80 hover:bg-cyan-600 text-white border border-cyan-400/40 transition-colors flex items-center gap-2 shadow-md">
+              <span>📥</span> 開啟與下載教材檔案
+            </a>
+          </div>
+        </div>
+
+        <!-- 右側實物投石車寫真卡片 (依需求：只保留右邊圖片，並更改標題文字) -->
+        <div class="lg:col-span-5 flex justify-center" id="photos">
+          <div class="w-full max-w-sm bg-white/10 p-3.5 rounded-2xl backdrop-blur-md border border-amber-500/30 shadow-2xl group">
+            <div class="overflow-hidden rounded-xl aspect-[4/5] bg-stone-900">
+              <img src="S__14811147.jpg" alt="可調節式角度與力臂構造" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            </div>
+            <!-- 圖說文字依需求修改為「可調節式角度與力臂構造」 -->
+            <div class="text-sm text-amber-100 text-center font-bold mt-3 tracking-wide">
+              可調節式角度與力臂構造
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= 教案內文主體容器 ================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+
+    <!-- ========== 一. 教案概述 ========== -->
+    <section id="overview" class="content-card p-6 md:p-10">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="section-badge bg-amber-100 text-amber-800 border border-amber-300">教案核心總覽</span>
+        <h2 class="text-2xl md:text-3xl font-black text-stone-900">二. 教案概述</h2>
+      </div>
+
+      <!-- 基本資訊網格 -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+          <div class="text-xs text-stone-500 font-bold mb-1">科目 / 領域別</div>
+          <div class="text-sm sm:text-base font-black text-amber-950">自然科學 ＆ 資訊科技</div>
+        </div>
+        <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+          <div class="text-xs text-stone-500 font-bold mb-1">教學總節數</div>
+          <div class="text-sm sm:text-base font-black text-amber-950">自然 2 節 ＋ 資訊 3 節（共5節）</div>
+        </div>
+        <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+          <div class="text-xs text-stone-500 font-bold mb-1">實施年級</div>
+          <div class="text-sm sm:text-base font-black text-amber-950">國小六年級</div>
+        </div>
+        <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+          <div class="text-xs text-stone-500 font-bold mb-1">教學設備器材</div>
+          <div class="text-sm sm:text-base font-black text-amber-950">自製投石機、電腦、學習單</div>
+        </div>
+      </div>
+
+      <!-- 專題摘要 -->
+      <div class="mb-8 bg-stone-50 p-6 md:p-8 rounded-2xl border border-stone-200">
+        <h3 class="text-lg font-bold text-amber-900 mb-2.5 flex items-center gap-2">
+          <span>📝</span> 專題摘要
+        </h3>
+        <p class="text-sm sm:text-base text-stone-700 leading-relaxed mb-6">
+          本課程旨在引導六年級學生透過投石機的製作和模擬，理解彈性位能、動能、力矩及槓桿原理。
+          課程設計符合學生的學習特質，以動手實作和電腦模擬為主，強化力學相關知識與多元學習的能力，並提升數據分析與問題解決的核心素養。
+          透過結合科技與資訊教育，學生不僅能學會基礎物理概念，也能運用運算思維解決問題，最終通過小組合作和報告展示來評估學習成果。
+        </p>
+
+        <!-- STEAM 教育設計面向 -->
+        <h4 class="text-xs font-bold text-stone-500 tracking-wider uppercase mb-3">STEAM 教育設計面向整合</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+            <div class="text-sm font-black text-blue-600 mb-1.5 flex items-center gap-1.5">
+              <span>🔬</span> Science (科學)
+            </div>
+            <div class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+              探討彈性位能的原理、能量轉換為動能的過程、槓桿原理與力矩平衡。
+            </div>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+            <div class="text-sm font-black text-cyan-600 mb-1.5 flex items-center gap-1.5">
+              <span>💻</span> Technology (技術)
+            </div>
+            <div class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+              在電腦上模擬拋射路徑（利用互動教育遊戲方式進行數值預測）。
+            </div>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+            <div class="text-sm font-black text-amber-600 mb-1.5 flex items-center gap-1.5">
+              <span>🛠️</span> Engineering (工程)
+            </div>
+            <div class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+              手作組裝雷切投石車並進行機械測試，根據說明圖稿校正卡榫機構。
+            </div>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
+            <div class="text-sm font-black text-emerald-600 mb-1.5 flex items-center gap-1.5">
+              <span>📐</span> Mathematics (數學)
+            </div>
+            <div class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+              量測投石臂長度及拉伸角度，比較投擲距離與高度，融入初階比與比值觀念。
+            </div>
+          </div>
+        </div>
+        <div class="mt-3.5 text-xs sm:text-sm text-stone-500 italic">
+          ※ 亦可加入 <strong>Arts (藝術)</strong> 面向進行投石車外觀木刻美編與彩繪設計。
+        </div>
+      </div>
+
+      <!-- 先備知識與核心素養 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-amber-50/50 p-6 rounded-xl border border-amber-200">
+          <h3 class="text-base font-bold text-amber-900 mb-3 flex items-center gap-2">
+            <span>🧠</span> 學生先備知識要求
+          </h3>
+          <ul class="text-xs sm:text-sm text-stone-700 space-y-2.5 list-disc list-inside leading-relaxed">
+            <li><strong>簡單機械與槓桿知識：</strong>需具備槓桿基礎知識，包含支點、施力點、抗力點及其在生活中的應用。</li>
+            <li><strong>基礎數據記錄和圖表閱讀：</strong>具備記錄數據及讀懂簡單圖表（柱狀圖、折線圖）之能力，以利數據分析。</li>
+            <li><strong>基礎電腦操作：</strong>掌握基本電腦操作技能，以便進行電腦模擬軟體與數據登錄。</li>
+          </ul>
+        </div>
+        <div class="bg-amber-50/50 p-6 rounded-xl border border-amber-200">
+          <h3 class="text-base font-bold text-amber-900 mb-3 flex items-center gap-2">
+            <span>🌟</span> 總綱之核心素養
+          </h3>
+          <div class="space-y-3.5">
+            <div class="flex items-start gap-3">
+              <span class="px-2.5 py-0.5 bg-amber-600 text-white rounded text-xs sm:text-sm font-bold">A2</span>
+              <div class="text-xs sm:text-sm text-stone-800">
+                <div class="font-bold">系統思考與解決問題</div>
+                <div class="text-stone-600 mt-0.5">能透過控制變因法分析拋物線變因，以數位模擬與實體驗證找出精準打擊的最佳配置。</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="px-2.5 py-0.5 bg-amber-600 text-white rounded text-xs sm:text-sm font-bold">C2</span>
+              <div class="text-xs sm:text-sm text-stone-800">
+                <div class="font-bold">人際關係與團隊合作</div>
+                <div class="text-stone-600 mt-0.5">能在小組內分工組裝零件、負責發射與撿彈測量，展現同儕互助與合作解決問題的素養。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 學習目標 (依需求重新設計版面與字體，避免生硬條列) -->
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-2xl">🎯</span>
+          <h3 class="text-xl font-bold text-amber-950">本單元具體學習目標與能力指標</h3>
+        </div>
+        <p class="text-sm text-stone-600 mb-5 leading-relaxed">
+          課程結合「物理概念建構」、「數位運算模擬」與「實體驗證數據分析」三大面向，引導學生達成完整之素養目標：
+        </p>
+
+        <!-- 三大核心素養維度排版 (優化字體與版型，消除死板條列感) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- 面向 1 -->
+          <div class="bg-gradient-to-br from-amber-50/70 to-white p-5 rounded-2xl border border-amber-200/90 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-amber-800 bg-amber-100/90 px-3 py-1 rounded-full border border-amber-300">科學原理</span>
+                <span class="text-xs font-mono text-amber-700 font-bold">CONCEPT</span>
+              </div>
+              <h4 class="text-base font-bold text-amber-950 mb-3 flex items-center gap-1.5">
+                <span>⚡</span> 物理力學與能量轉換
+              </h4>
+              <p class="text-sm text-stone-700 leading-relaxed mb-3">
+                <strong class="text-amber-900 font-bold">彈性位能釋放：</strong>深入理解橡皮筋蓄力如何釋放並轉化為拋體動能，建立能量轉換守恆概念。
+              </p>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                <strong class="text-amber-900 font-bold">槓桿構造與作用：</strong>清楚辨識支點、施力點與抗力點位置，推論力矩平衡在投石臂設計中的運作機制。
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-amber-200/60 text-xs text-amber-800 font-semibold flex items-center gap-1">
+              <span>✓</span> 對應目標 1、目標 2
+            </div>
+          </div>
+
+          <!-- 面向 2 -->
+          <div class="bg-gradient-to-br from-cyan-50/70 to-white p-5 rounded-2xl border border-cyan-200/90 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-cyan-800 bg-cyan-100/90 px-3 py-1 rounded-full border border-cyan-300">科技技術</span>
+                <span class="text-xs font-mono text-cyan-700 font-bold">DIGITAL & MAKER</span>
+              </div>
+              <h4 class="text-base font-bold text-cyan-950 mb-3 flex items-center gap-1.5">
+                <span>💻</span> 數位模擬與工程組裝
+              </h4>
+              <p class="text-sm text-stone-700 leading-relaxed mb-3">
+                <strong class="text-cyan-900 font-bold">電腦虛擬拋射：</strong>操作教育模擬軟體測試不同投射仰角與力臂設定，記錄預測數據以比較拋射路徑與極限。
+              </p>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                <strong class="text-cyan-900 font-bold">雷切零件實作：</strong>依照工程藍圖正確使用手工具進行投石車組裝，並能運用砂紙研磨解決木板公差問題。
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-cyan-200/60 text-xs text-cyan-800 font-semibold flex items-center gap-1">
+              <span>✓</span> 對應目標 3、目標 4
+            </div>
+          </div>
+
+          <!-- 面向 3 -->
+          <div class="bg-gradient-to-br from-emerald-50/70 to-white p-5 rounded-2xl border border-emerald-200/90 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-emerald-800 bg-emerald-100/90 px-3 py-1 rounded-full border border-emerald-300">實證分析</span>
+                <span class="text-xs font-mono text-emerald-700 font-bold">ANALYSIS</span>
+              </div>
+              <h4 class="text-base font-bold text-emerald-950 mb-3 flex items-center gap-1.5">
+                <span>📊</span> 多變因實測與圖表論證
+              </h4>
+              <p class="text-sm text-stone-700 leading-relaxed mb-3">
+                <strong class="text-emerald-900 font-bold">多變因控制測試：</strong>實彈測試不同拉伸角度與力臂長度，對比木球與乒乓球之飛行特性差異。
+              </p>
+              <p class="text-sm text-stone-700 leading-relaxed">
+                <strong class="text-emerald-900 font-bold">雙折線圖分析發表：</strong>系統化記錄數據並繪製折線圖，運用數據分析提出命中特定距離的最佳參數策略。
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-emerald-200/60 text-xs text-emerald-800 font-semibold flex items-center gap-1">
+              <span>✓</span> 對應目標 5、目標 6
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 二. 雙向細目表 ========== -->
+    <section id="matrix" class="content-card p-6 md:p-10">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="section-badge bg-blue-100 text-blue-800 border border-blue-300">課綱對應分析</span>
+        <h2 class="text-2xl md:text-3xl font-black text-stone-900">一. 雙向細目表</h2>
+      </div>
+      <p class="text-sm sm:text-base text-stone-600 mb-6 leading-relaxed">
+        本表將科技領域（生活科技、資訊科技）及自然科學領域之學習內容與學習表現進行系統化矩陣對應，清楚界定學生的具體學習展現成果。
+      </p>
+
+      <div class="overflow-x-auto rounded-xl border border-amber-200 shadow-sm">
+        <table class="table-custom w-full text-left">
+          <thead>
+            <tr>
+              <th class="w-1/5 bg-amber-100/70">學習表現 ＼ 學習內容</th>
+              <th class="w-1/5">科議 N-Ⅲ-1：科技的基本特性<br><span class="text-xs font-normal text-stone-600">自 INb-Ⅲ-4：力可藉由簡單機械傳遞</span></th>
+              <th class="w-1/5">科議 P-Ⅲ-1：基本的造形與設計</th>
+              <th class="w-1/5">科議 P-Ⅲ-2：工具與材料的使用方法</th>
+              <th class="w-1/5">資議 D-Ⅲ-2：系統化資料管理方法</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="font-bold text-stone-800 bg-stone-50">
+                科議 k-Ⅲ-1：<br><span class="text-xs font-normal text-stone-600">說明常見科技產品的用途與運作方式</span>
+              </td>
+              <td class="bg-amber-50/50">
+                <span class="text-xs sm:text-sm text-amber-950 font-medium">學生能解釋彈性位能如何釋放，和理解槓桿的基本概念，並理解其在投石機上的應用。</span>
+              </td>
+              <td class="text-center text-stone-300">—</td>
+              <td class="text-center text-stone-300">—</td>
+              <td class="text-center text-stone-300">—</td>
+            </tr>
+            <tr>
+              <td class="font-bold text-stone-800 bg-stone-50">
+                資議 t-Ⅲ-1：<br><span class="text-xs font-normal text-stone-600">運用常見的資訊系統</span><br>
+                科議 s-Ⅲ-1：<br><span class="text-xs font-normal text-stone-600">製作圖稿以呈現設計構想</span>
+              </td>
+              <td class="text-center text-stone-300">—</td>
+              <td class="bg-amber-50/50">
+                <span class="text-xs sm:text-sm text-amber-950 font-medium">學生能利用電腦模擬拋射路徑，並根據結果設計投石機。</span>
+              </td>
+              <td class="text-center text-stone-300">—</td>
+              <td class="text-center text-stone-300">—</td>
+            </tr>
+            <tr>
+              <td class="font-bold text-stone-800 bg-stone-50">
+                科議 c-Ⅲ-1：<br><span class="text-xs font-normal text-stone-600">依據設計構想進行實作</span><br>
+                科議 s-Ⅲ-2：<br><span class="text-xs font-normal text-stone-600">使用常見的手工具與材料</span>
+              </td>
+              <td class="text-center text-stone-300">—</td>
+              <td class="text-center text-stone-300">—</td>
+              <td class="bg-amber-50/50">
+                <span class="text-xs sm:text-sm text-amber-950 font-medium">學生能根據設計圖完成投石機的組裝，並測試其結果和功能。</span>
+              </td>
+              <td class="text-center text-stone-300">—</td>
+            </tr>
+            <tr>
+              <td class="font-bold text-stone-800 bg-stone-50">
+                資議 t-Ⅲ-3：<br><span class="text-xs font-normal text-stone-600">運用運算思維解決問題</span><br>
+                科議 c-Ⅲ-3：<br><span class="text-xs font-normal text-stone-600">展現合作問題解決的能力</span>
+              </td>
+              <td class="text-center text-stone-300">—</td>
+              <td class="text-center text-stone-300">—</td>
+              <td class="text-center text-stone-300">—</td>
+              <td class="bg-amber-50/50">
+                <span class="text-xs sm:text-sm text-amber-950 font-medium">學生能根據測試數據進行分析，並使用圖表呈現不同拉伸角度與距離之間的關係。</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== 三. 評量根據 ========== -->
+    <section id="evaluation" class="content-card p-6 md:p-10">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="section-badge bg-emerald-100 text-emerald-800 border border-emerald-300">多元量規規準</span>
+        <h2 class="text-2xl md:text-3xl font-black text-stone-900">三. 評量根據</h2>
+      </div>
+      <p class="text-sm sm:text-base text-stone-600 mb-6 leading-relaxed">
+        以素養導向評量為原則，結合引導式問答、實作觀察、作品檢查、同儕討論與數據分析報告，全面檢核學生學習表現。
+      </p>
+
+      <div class="overflow-x-auto rounded-xl border border-amber-200 shadow-sm">
+        <table class="table-custom w-full text-left">
+          <thead>
+            <tr>
+              <th class="w-14 text-center">項次</th>
+              <th class="w-1/4">以學習表現作為評量標準</th>
+              <th class="w-1/4">對應之學習內容類別</th>
+              <th class="w-1/2">具體評量方式（評量工具與根據）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center font-bold">1</td>
+              <td><strong>k-Ⅲ-1：</strong>說明常見科技產品的用途與運作方式</td>
+              <td><strong>N-Ⅲ-1：</strong>科技的基本特性<br><strong>自 INb-Ⅲ-4：</strong>力可藉由簡單機械傳遞</td>
+              <td>
+                <span class="font-bold text-amber-800">【評量工具】</span>引導式問答<br>
+                <span class="font-bold text-amber-800">【評量根據】</span>根據學生的描述，觀察是否能清楚解釋投石機的功能及運作原理，並能聯繫生活應用。
+              </td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">2</td>
+              <td><strong>s-Ⅲ-1：</strong>根據圖稿以呈現設計構想</td>
+              <td><strong>P-Ⅲ-1：</strong>基本的造形與設計</td>
+              <td>
+                <span class="font-bold text-amber-800">【評量工具】</span>實作觀察<br>
+                <span class="font-bold text-amber-800">【評量根據】</span>檢查學生的是否清晰呈現圖稿構想，觀察學生是否掌握投石機的基本造形與設計概念。
+              </td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">3</td>
+              <td><strong>s-Ⅲ-2：</strong>使用常見的手工具與材料</td>
+              <td><strong>P-Ⅲ-2：</strong>工具與材料的使用方法</td>
+              <td>
+                <span class="font-bold text-amber-800">【評量工具】</span>教師觀察<br>
+                <span class="font-bold text-amber-800">【評量根據】</span>確認學生是否能安全、正確地使用工具和材料進行投石機組裝，符合操作規範。
+              </td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">4</td>
+              <td><strong>c-Ⅲ-1：</strong>依據設計構想進行實作</td>
+              <td><strong>P-Ⅲ-1：</strong>基本的造形與設計</td>
+              <td>
+                <span class="font-bold text-amber-800">【評量工具】</span>作品檢查<br>
+                <span class="font-bold text-amber-800">【評量根據】</span>根據學生的最終作品，檢查投石機是否可正常運行，並確保學生能依構想完成實作。
+              </td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">5</td>
+              <td><strong>c-Ⅲ-3：</strong>展現合作問題解決的能力</td>
+              <td><strong>D-Ⅲ-2：</strong>系統化資料管理方法</td>
+              <td>
+                <span class="font-bold text-amber-800">【評量工具】</span>小組合作記錄、課堂討論觀察<br>
+                <span class="font-bold text-amber-800">【評量根據】</span>觀察學生在小組合作中的表現，確認其在資料收集與分析中展現解決問題的能力。
+              </td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">6</td>
+              <td><strong>t-Ⅲ-1：</strong>運用常見的資訊系統</td>
+              <td><strong>D-Ⅲ-2：</strong>系統化資料管理方法</td>
+              <td>
+                <span class="font-bold text-amber-800">【評量工具】</span>電腦圖表<br>
+                <span class="font-bold text-amber-800">【評量根據】</span>檢查學生是否能在電腦記錄數據，正確製作出對應圖表。
+              </td>
+            </tr>
+            <tr>
+              <td class="text-center font-bold">7</td>
+              <td><strong>t-Ⅲ-3：</strong>運用運算思維解決問題</td>
+              <td><strong>D-Ⅲ-2：</strong>系統化資料管理方法</td>
+              <td>
+                <span class="font-bold text-amber-800">【評量工具】</span>數據表格檢核表、報告呈現<br>
+                <span class="font-bold text-amber-800">【評量根據】</span>檢視學生是否能利用數據分析進行投射距離比較，並在報告中正確解釋不同數據結果。
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== 四. 課程設計架構圖 (完全依據修改後的PDF第4頁重構 2x2 雙軸流動與箭頭) ========== -->
+    <section id="framework" class="content-card p-6 md:p-10">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="section-badge bg-orange-100 text-orange-800 border border-orange-300">教學模組脈絡</span>
+        <h2 class="text-2xl md:text-3xl font-black text-stone-900">四. 課程設計架構圖</h2>
+      </div>
+      <p class="text-sm sm:text-base text-stone-600 mb-8 leading-relaxed">
+        依據教案架構，左軸為「概念觀察到電腦模擬」，右軸為「實物組裝到實彈測量」，形成橫向互通與縱向推進之完整脈絡：
+      </p>
+
+      <!-- 2x2 雙軸架構排版 (完全依照PDF第4頁：刪除最底行字，並依原架構放置箭頭) -->
+      <div class="relative max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 relative z-10">
+
+          <!-- 左上：活動一 -->
+          <div class="framework-card border-2 border-amber-300 p-6 bg-amber-50/50 relative flex flex-col justify-between">
+            <div>
+              <div class="inline-block px-3 py-1 bg-amber-500 text-white rounded-lg text-xs font-bold mb-3 shadow-sm">
+                活動一
+              </div>
+              <ul class="text-sm text-stone-800 space-y-2.5 list-disc list-inside leading-relaxed">
+                <li>觀察投石車零件，理解其構造</li>
+                <li>透過不同重量之物體讓學生體驗並探究軌跡差異</li>
+                <li>繪製心智圖，記錄不同變因導致的差異</li>
+              </ul>
+            </div>
+            <!-- 桌面版向下與向右指引標記 -->
+            <div class="mt-4 pt-3 flex items-center justify-between text-xs text-amber-700 font-bold border-t border-amber-200">
+              <span class="flex items-center gap-1">↓ 往下開展活動二</span>
+              <span class="flex items-center gap-1">往右對應活動三 ➔</span>
+            </div>
+          </div>
+
+          <!-- 右上：活動三 -->
+          <div class="framework-card border-2 border-emerald-300 p-6 bg-emerald-50/50 relative flex flex-col justify-between">
+            <div>
+              <div class="inline-block px-3 py-1 bg-emerald-600 text-white rounded-lg text-xs font-bold mb-3 shadow-sm">
+                活動三
+              </div>
+              <ul class="text-sm text-stone-800 space-y-2.5 list-disc list-inside leading-relaxed">
+                <li>依據設計與步驟圖組裝投石器</li>
+                <li>確認組裝完成後構造是否可正常運作</li>
+                <li>實際發射活動前重要事項宣導</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 flex items-center justify-between text-xs text-emerald-700 font-bold border-t border-emerald-200">
+              <span class="flex items-center gap-1">← 由活動一結構出發</span>
+              <span class="flex items-center gap-1">↓ 往下進行活動四實測</span>
+            </div>
+          </div>
+
+          <!-- 左下：活動二 -->
+          <div class="framework-card border-2 border-cyan-300 p-6 bg-cyan-50/50 relative flex flex-col justify-between">
+            <div>
+              <div class="inline-block px-3 py-1 bg-cyan-600 text-white rounded-lg text-xs font-bold mb-3 shadow-sm">
+                活動二
+              </div>
+              <ul class="text-sm text-stone-800 space-y-2.5 list-disc list-inside leading-relaxed">
+                <li>示範如何調整模擬軟體數值並發射</li>
+                <li>學生實際操作，找出不同情境下最佳發射角度與長度</li>
+                <li>繪製投石器草圖，並依據前面的模擬軟體數據事先構想最佳的角度與長度</li>
+              </ul>
+            </div>
+            <div class="mt-4 pt-3 flex items-center justify-between text-xs text-cyan-700 font-bold border-t border-cyan-200">
+              <span class="flex items-center gap-1">↑ 承接活動一心智圖</span>
+              <span class="flex items-center gap-1">模擬數據驗證活動四 ➔</span>
+            </div>
+          </div>
+
+          <!-- 右下：活動四 -->
+          <div class="framework-card border-2 border-orange-300 p-6 bg-orange-50/50 relative flex flex-col justify-between">
+            <div>
+              <div class="inline-block px-3 py-1 bg-orange-600 text-white rounded-lg text-xs font-bold mb-3 shadow-sm">
+                活動四
+              </div>
+              <ol class="text-sm text-stone-800 space-y-2 list-decimal list-inside leading-relaxed">
+                <li>固定長度的情況下進行不同角度發射並記錄距離</li>
+                <li>更換發射物體，記錄不同重量情況下不同角度的發射距離</li>
+                <li>調整長度並重複上述動作，觀察距離變化</li>
+                <li>統整發射數據整理成圖，並討論角度與長度如何影響發射情形</li>
+                <li>給定隨機目標，小組嘗試精準射擊</li>
+              </ol>
+            </div>
+            <div class="mt-4 pt-3 flex items-center justify-between text-xs text-orange-700 font-bold border-t border-orange-200">
+              <span class="flex items-center gap-1">← 對比活動二模擬預測</span>
+              <span class="flex items-center gap-1">↑ 結合活動三實體投石機</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 五. 教學活動詳細步驟 ========== -->
+    <section id="activities" class="content-card p-6 md:p-10">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="section-badge bg-amber-100 text-amber-800 border border-amber-300">教案詳細步驟</span>
+        <h2 class="text-2xl md:text-3xl font-black text-stone-900">五. 教學活動步驟（全 5 節）</h2>
+      </div>
+
+      <div class="space-y-8 mt-6">
+
+        <!-- ========== 活動一 ========== -->
+        <div class="border border-amber-200 rounded-2xl p-6 bg-gradient-to-r from-amber-50/40 to-white">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h3 class="text-lg md:text-xl font-black text-amber-950 flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-full bg-amber-600 text-white text-sm flex items-center justify-center font-bold">1</span>
+              活動一 / 機關大解密——發現拋射的變因
+            </h3>
+            <span class="px-3.5 py-1 bg-amber-200/60 text-amber-900 text-xs sm:text-sm font-bold rounded-full">共 1 節，40 分鐘</span>
+          </div>
+          <div class="text-xs sm:text-sm text-stone-600 mb-4 bg-amber-100/40 p-3.5 rounded-lg leading-relaxed">
+            <strong>【活動簡述】</strong>透過觀察投石車的雷切精密零件，探討「角度調節卡榫」與「長度調節軌道」的機械設計，並透過實體觸摸比較木球與乒乓球的物理特性。
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm mb-4">
+            <div class="p-3.5 bg-white rounded-lg border border-stone-200">
+              <span class="font-bold text-amber-800">【學習表現】</span>科議k-III-1、自INb-III-4<br>
+              <span class="font-bold text-amber-800">【學習內容】</span>科議N-III-1、科議P-III-1
+            </div>
+            <div class="p-3.5 bg-white rounded-lg border border-stone-200">
+              <span class="font-bold text-amber-800">【學習目標】</span>學生能辨識投石車上的卡榫結構如何控制角度與長度，並能推論不同材質球體對拋射的影響。
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-stone-200">
+            <table class="table-custom w-full">
+              <thead>
+                <tr>
+                  <th class="w-1/4">教學活動名稱</th>
+                  <th class="w-1/2">活動內容（含時間分配）</th>
+                  <th class="w-1/8 text-center">評量方式</th>
+                  <th class="w-1/8">教學備註</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold">1. 零件觀察站</td>
+                  <td>
+                    <strong>零件觀察站 (15mins)：</strong>教師展示投石車的「角度調節盤」與「投石臂」半成品，引導學生觀察實體卡槽如何達到 <strong>10°、30°、50°、70°、90°</strong> 的定位，以及長度如何以 <strong>2 公分間隔</strong>（10~20cm）卡緊。
+                  </td>
+                  <td class="text-center">變因心智圖檢核、課堂問答紀錄</td>
+                  <td>教師準備投石車局部零件供傳閱</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">2. 材質大不同</td>
+                  <td>
+                    <strong>材質大不同 (10mins)：</strong>發下木球與乒乓球，讓學生實際感受兩者的重量與表面摩擦力，分組討論這兩種球體如果在相同的發射條件下，軌跡會有何不同。
+                  </td>
+                  <td class="text-center">變因心智圖檢核、課堂問答紀錄</td>
+                  <td>教師準備足夠數量的木球與乒乓球</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">3. 變因心智圖</td>
+                  <td>
+                    <strong>變因心智圖 (15mins)：</strong>學生分組繪製影響拋射距離的「變因心智圖」，將今日觀察到的三大變因（角度、長度、球體材質）及其可能的影響視覺化。
+                  </td>
+                  <td class="text-center">變因心智圖檢核、課堂問答紀錄</td>
+                  <td>引導歸納出主要自變因</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ========== 活動二 ========== -->
+        <div class="border border-cyan-200 rounded-2xl p-6 bg-gradient-to-r from-cyan-50/40 to-white">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h3 class="text-lg md:text-xl font-black text-cyan-950 flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-full bg-cyan-700 text-white text-sm flex items-center justify-center font-bold">2</span>
+              活動二 / 數位兵工廠——模擬我們的戰車
+            </h3>
+            <span class="px-3.5 py-1 bg-cyan-200/60 text-cyan-900 text-xs sm:text-sm font-bold rounded-full">共 1 節，40 分鐘</span>
+          </div>
+          <div class="text-xs sm:text-sm text-stone-600 mb-4 bg-cyan-100/40 p-3.5 rounded-lg leading-relaxed">
+            <strong>【活動簡述】</strong>結合數位軟體，在電腦上設定對應的變數（質量、力臂長度、五檔發射角度），預測不同組合下的拋射極限，並繪製出專屬的實作藍圖。
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm mb-4">
+            <div class="p-3.5 bg-white rounded-lg border border-stone-200">
+              <span class="font-bold text-cyan-800">【學習表現】</span>資議t-III-1、科議s-III-1<br>
+              <span class="font-bold text-cyan-800">【學習內容】</span>資議D-III-2、科議P-III-1
+            </div>
+            <div class="p-3.5 bg-white rounded-lg border border-stone-200">
+              <span class="font-bold text-cyan-800">【學習目標】</span>學生能操作數位模擬工具輸入特定變數，並繪製出具有具體參數的投石車設定藍圖。
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-stone-200 mb-4">
+            <table class="table-custom w-full">
+              <thead>
+                <tr>
+                  <th class="w-1/4">教學活動名稱</th>
+                  <th class="w-1/2">活動內容（含時間分配）</th>
+                  <th class="w-1/8 text-center">評量方式</th>
+                  <th class="w-1/8">教學備註</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold">1. 數位靶場設定</td>
+                  <td>
+                    <strong>數位靶場設定 (10mins)：</strong>教師引導學生開啟教育模擬軟體（本站模擬器），說明如何將系統參數限制在投石車規格內（角度僅能設定 10~90°，長度以每 2 公分為單位調整 10~20cm，以及調整質量）。
+                  </td>
+                  <td class="text-center">雲端數據表單填寫狀況</td>
+                  <td>需準備平板或電腦供小組使用</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">2. 極限預測挑戰</td>
+                  <td>
+                    <strong>極限預測挑戰 (15mins)：</strong>各組在軟體中進行「虛擬試射」，找出一組「讓輕物（乒乓球）飛最遠」的參數，以及一組「讓重物（木球）飛最高」的參數，並登錄至學習紀錄單。
+                  </td>
+                  <td class="text-center">學習紀錄單填寫狀況</td>
+                  <td>學生於線上模擬器試玩並記錄</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">3. 繪製專屬藍圖</td>
+                  <td>
+                    <strong>繪製專屬藍圖 (15mins)：</strong>學生在學習單上畫出投石機的立體草圖，並標註下一堂課實作時，他們小組首發測試預計使用的「長度檔位」與「角度檔位」。
+                  </td>
+                  <td class="text-center">設計藍圖學習單</td>
+                  <td>產出小組實體組裝規格書</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 精美引導卡片：啟動模擬遊戲 -->
+          <div class="p-4 sm:p-5 rounded-xl border border-cyan-300/80 bg-cyan-50/70 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <span class="text-3xl">🎮</span>
+              <div>
+                <div class="font-bold text-cyan-950 text-base sm:text-lg">投石戰車線上模擬實驗室</div>
+                <div class="text-xs sm:text-sm text-cyan-800">支援 10°~90° 五檔仰角、10~20cm 六檔臂長與乒乓球/木球模擬試射！</div>
+              </div>
+            </div>
+            <a href="simulator.html" target="_blank" class="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white text-sm font-bold rounded-xl shadow transition-all shrink-0 flex items-center gap-2">
+              <span>🚀</span> 進入模擬試射 ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- ========== 活動三 ========== -->
+        <div class="border border-emerald-200 rounded-2xl p-6 bg-gradient-to-r from-emerald-50/40 to-white">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h3 class="text-lg md:text-xl font-black text-emerald-950 flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-full bg-emerald-700 text-white text-sm flex items-center justify-center font-bold">3</span>
+              活動三 / 創客出任務——精準組裝與校正
+            </h3>
+            <span class="px-3.5 py-1 bg-emerald-200/60 text-emerald-900 text-xs sm:text-sm font-bold rounded-full">共 1 節，40 分鐘</span>
+          </div>
+          <div class="text-xs sm:text-sm text-stone-600 mb-4 bg-emerald-100/40 p-3.5 rounded-lg leading-relaxed">
+            <strong>【活動簡述】</strong>將木製零件組裝成多段調節投石車，檢驗角度卡榫與長度軌道的順暢度，並進行無彈藥的機械流暢度測試。
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm mb-4">
+            <div class="p-3.5 bg-white rounded-lg border border-stone-200">
+              <span class="font-bold text-emerald-800">【學習表現】</span>科議c-III-1、科議s-III-2<br>
+              <span class="font-bold text-emerald-800">【學習內容】</span>科議P-III-2
+            </div>
+            <div class="p-3.5 bg-white rounded-lg border border-stone-200">
+              <span class="font-bold text-emerald-800">【學習目標】</span>學生能正確運用工具與材料完成組裝，並能成功切換不同的長度（2公分間距）與角度（20度間距）檔位。
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-stone-200">
+            <table class="table-custom w-full">
+              <thead>
+                <tr>
+                  <th class="w-1/4">教學活動名稱</th>
+                  <th class="w-1/2">活動內容（含時間分配）</th>
+                  <th class="w-1/8 text-center">評量方式</th>
+                  <th class="w-1/8">教學備註</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold">1. 結構大師組裝</td>
+                  <td>
+                    <strong>結構大師組裝 (25mins)：</strong>學生依據步驟圖組裝雷切零件。教師加強巡視，確保學生在「角度卡榫座」與「可調式力臂」的接合點有確實對準並固定。
+                  </td>
+                  <td class="text-center">實體作品品管檢核</td>
+                  <td>需準備砂紙備用，以處理雷切木板微小公差</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">2. 機關流暢度品管</td>
+                  <td>
+                    <strong>機關流暢度品管 (10mins)：</strong>不裝設球體，小組成員互相檢查投石臂是否能滑順地從 10 度切換至 90 度（確認五個檔位都能卡緊），以及長度調節器是否能確實以 2 公分為單位鎖定。
+                  </td>
+                  <td class="text-center">教師巡視觀察</td>
+                  <td>確保組裝精度符合實驗要求</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">3. 安全規範宣導</td>
+                  <td>
+                    <strong>安全規範宣導 (5mins)：</strong>教師講解下一節實地測量的靶場規則，包含設立絕對發射線、撿彈員的安全站位等。
+                  </td>
+                  <td class="text-center">教師巡視觀察</td>
+                  <td>嚴格禁止發射彈射物朝向人體</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ========== 活動四 ========== -->
+        <div class="border border-orange-200 rounded-2xl p-6 bg-gradient-to-r from-orange-50/40 to-white">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h3 class="text-lg md:text-xl font-black text-orange-950 flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-full bg-orange-600 text-white text-sm flex items-center justify-center font-bold">4</span>
+              活動四 / 科學實證場——多變因實測
+            </h3>
+            <span class="px-3.5 py-1 bg-orange-200/60 text-orange-900 text-xs sm:text-sm font-bold rounded-full">共 2 節，80 分鐘</span>
+          </div>
+          <div class="text-xs sm:text-sm text-stone-600 mb-4 bg-orange-100/40 p-3.5 rounded-lg leading-relaxed">
+            <strong>【活動簡述】</strong>在安全場地進行實彈測量。採用控制變因法，系統性地更換角度、長度與球體材質，記錄每一發的飛行落點矩陣。並將實測數據轉換為雙折線圖（比較木球與乒乓球），找出針對特定目標距離的最佳參數配置，並進行小組簡報發表。
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm mb-4">
+            <div class="p-3.5 bg-white rounded-lg border border-stone-200">
+              <span class="font-bold text-orange-800">【學習表現】</span>資議t-III-3、科議c-III-3<br>
+              <span class="font-bold text-orange-800">【學習內容】</span>資議D-III-2、自INb-III-4
+            </div>
+            <div class="p-3.5 bg-white rounded-lg border border-stone-200">
+              <span class="font-bold text-orange-800">【學習目標】</span>
+              1. 學生能執行控制變因的實地測試，並詳實記錄不同檔位組合下的拋射距離。<br>
+              2. 學生能將原始數據轉化為視覺化雙折線圖，並根據圖表提出「精準打擊特定距離」的最佳參數策略。
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-stone-200">
+            <table class="table-custom w-full">
+              <thead>
+                <tr>
+                  <th class="w-1/4">教學活動名稱</th>
+                  <th class="w-1/2">活動內容（含時間分配）</th>
+                  <th class="w-1/8 text-center">評量方式</th>
+                  <th class="w-1/8">教學備註</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold">1. 建立測試基地</td>
+                  <td><strong>建立測試基地 (5mins)：</strong>各組帶領設備至走廊或空曠處，在地板貼上紙膠帶作為發射線與測量捲尺基準。</td>
+                  <td class="text-center">實地觀測矩陣紀錄表填寫完整度</td>
+                  <td>需淨空的走廊空間、長捲尺、紙膠帶</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">2. 乒乓球的飛行</td>
+                  <td><strong>乒乓球的飛行 (15mins)：</strong>統一固定投石臂長度，僅改變發射角度（10、30、50、70、90度依序進行），連續發射乒乓球並由紀錄員寫下落點距離。</td>
+                  <td class="text-center">實作合作態度評量</td>
+                  <td>需淨空的走廊空間、長捲尺、紙膠帶</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">3. 木球的重擊</td>
+                  <td>
+                    <strong>木球的重擊 (15mins)：</strong>換成木球，重複上述五個角度檔位的測試。動作較快的小組，可啟動進階任務：調整力臂長度（縮短或延長2公分），觀察落點變化。<br>
+                    <strong>數據統整 (5mins)：</strong>整理場地，確保矩陣紀錄表上的數據皆無漏填。
+                  </td>
+                  <td class="text-center">實地觀測矩陣紀錄表填寫完整度</td>
+                  <td>比較輕質與重質球體拋射特性</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">4. 數據視覺化轉譯</td>
+                  <td><strong>數據視覺化轉譯 (15mins)：</strong>引導學生將紀錄表轉換為「發射角度 vs. 拋射距離」的折線圖，規定用不同顏色的線條區別木球與乒乓球，使變因結果一目瞭然。</td>
+                  <td class="text-center">雙折線圖數據分析單</td>
+                  <td>發下大張方格紙</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">5. 參數解密討論</td>
+                  <td><strong>參數解密討論 (10mins)：</strong>觀看圖表趨勢，討論「為何乒乓球在某角度飛較遠，木球卻在另一個角度表現更好？」以及「力臂的長度如何影響這兩條線的走向？」。</td>
+                  <td class="text-center">上台發表表現評量</td>
+                  <td>引導學生進行理性科學論證</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">6. 精準打擊挑戰賽</td>
+                  <td><strong>精準打擊挑戰賽 (15mins)：</strong>教師給定一個目標距離套環，各組需根據自己的投石器，調整角度與長度的參數，嘗試在最少次數內命中目標。</td>
+                  <td class="text-center">實作與表現評量</td>
+                  <td>套中套環驗證運算思維</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== 六. 教學成果與回饋 ========== -->
+    <section id="feedback" class="content-card p-6 md:p-10">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="section-badge bg-stone-100 text-stone-800 border border-stone-300">實施反思與策略</span>
+        <h2 class="text-2xl md:text-3xl font-black text-stone-900">六. 教學成果、實施困境與優化策略</h2>
+      </div>
+
+      <div class="space-y-6 mt-6">
+        <!-- 困境 1 -->
+        <div class="bg-amber-50/50 p-6 rounded-2xl border border-amber-200">
+          <h3 class="text-base md:text-lg font-bold text-amber-950 mb-3 flex items-center gap-2">
+            <span>🔧</span> 1. 手工具操作與機構組裝之落差
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm leading-relaxed">
+            <div class="bg-white p-4 rounded-xl border border-stone-200">
+              <span class="font-bold text-red-600 block mb-1">【現場實施省思】</span>
+              部分六年級學生缺乏自主組裝經驗，且雷切木製零件可能存在微小公差，導致「角度調節卡榫」與「可調式力臂」在拼接時過緊或易鬆脫。
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-stone-200">
+              <span class="font-bold text-green-700 block mb-1">【教學優化策略】</span>
+              教師於課前準備砂紙供研磨修補，並要求組員檢查五個角度檔位與 2 公分間距的力臂長度軌道是否能確實卡緊並滑順運作，確保發射機構的穩定度。
+            </div>
+          </div>
+        </div>
+
+        <!-- 困境 2 -->
+        <div class="bg-amber-50/50 p-6 rounded-2xl border border-amber-200">
+          <h3 class="text-base md:text-lg font-bold text-amber-950 mb-3 flex items-center gap-2">
+            <span>📊</span> 2. 數據記錄與數位圖表繪製之挑戰
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm leading-relaxed">
+            <div class="bg-white p-4 rounded-xl border border-stone-200">
+              <span class="font-bold text-red-600 block mb-1">【現場實施省思】</span>
+              本課程包含「發射角度」、「力臂長度（2cm間距）」與「投擲物重量（木球 vs. 乒乓球）」等三個變因。學生在實地測量與登計數據時，常因操作不熟練而出現數據漏填，或在繪製雙折線圖時無法清楚對比兩種球體的飛行軌跡。
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-stone-200">
+              <span class="font-bold text-green-700 block mb-1">【教學優化策略】</span>
+              教師預先提供預設數據表單模板與方格紙分析單。引導學生將原始數據精確轉化為「角度 vs. 距離」的雙折線圖，順利進階至精準打擊發表會討論。
+            </div>
+          </div>
+        </div>
+
+        <!-- 課堂安全與場地管理規範 -->
+        <div class="bg-stone-50 p-6 rounded-2xl border border-stone-200">
+          <h3 class="text-base md:text-lg font-bold text-stone-900 mb-3 flex items-center gap-2">
+            <span>⚠️</span> 課堂安全與場地管理規範
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm leading-relaxed">
+            <div class="bg-white p-4 rounded-xl border border-stone-200">
+              <div class="font-bold text-amber-800 mb-1">1. 教具與材料操作安全</div>
+              組裝過程中引導學生正確使用竹筷、橡皮筋等組裝材料，避免橡皮筋斷裂或彈射零件造成傷害，製作前必須進行安全規範宣導。
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-stone-200">
+              <div class="font-bold text-amber-800 mb-1">2. 實彈測試場地管制</div>
+              活動四進行木球和乒乓球拋射時，於測試場地貼上記號紙膠帶以設立安全區塊。劃定專屬發射區與落點區，規範學生進入前，所有人需停止發射，且確認測試場地四周無易碎物或危險物品。
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-stone-200">
+              <div class="font-bold text-amber-800 mb-1">3. 數據討論與團隊引導</div>
+              提醒學生仔細核對每一次的落點數據。引導學生針對「為何輕物（乒乓球）與重物（木球）的最佳發射角度不同」以及「力臂長度如何影響軌跡」進行理性數據論證，培養合作解決問題之素養。
+            </div>
+          </div>
+        </div>
+
+        <!-- 參考資料 -->
+        <div class="p-4 bg-white rounded-xl border border-stone-200 text-xs sm:text-sm">
+          <span class="font-bold text-amber-900">📚 課程參考資料：</span>
+          <span class="text-stone-700 ml-2">1. 槓桿原理與簡單機械 ｜ 2. 控制變因科學方法</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 七. 附錄：教材下載專區 (依需求改為單一實裝SVG圖稿，刪除另外兩個) ========== -->
+    <section id="appendix" class="content-card p-6 md:p-10 border-2 border-amber-300 bg-gradient-to-b from-amber-50/80 via-white to-amber-50/60">
+      <div class="mb-8">
+        <div class="text-amber-800 font-bold text-sm tracking-wider uppercase mb-1">附錄</div>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-amber-950 tracking-wide">
+          把教材帶進課堂，開啟或列印
+        </h2>
+        <p class="text-stone-600 text-sm sm:text-base mt-2">
+          學習單、完整教案與雷切組裝圖稿，可依需要開啟、下載或列印。
+        </p>
+      </div>
+
+      <!-- 下載項目卡片網格 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <!-- 1. 完整教案 PDF -->
+        <div class="download-card-wood p-5 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="text-amber-800 font-black text-sm font-mono px-2.5 py-1.5 bg-amber-100 border border-amber-300 rounded-lg">PDF</span>
+            <div>
+              <div class="font-bold text-stone-900 text-base sm:text-lg">完整教案</div>
+              <div class="text-xs sm:text-sm text-stone-500">共 15 頁・完整教學設計規範</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <a href="lesson_plan.pdf" target="_blank" class="text-sm font-bold text-amber-800 hover:text-amber-600 transition-colors flex items-center gap-1">
+              開啟 ↗
+            </a>
+            <a href="lesson_plan.pdf" download="國小科技資訊教育教案_投石戰車.pdf" class="text-sm font-bold text-amber-800 hover:text-amber-600 transition-colors flex items-center gap-1">
+              下載 ↓
+            </a>
+          </div>
+        </div>
+
+        <!-- 2. 學習單 3：第四節學習單 (實驗紀錄與反思) -->
+        <div class="download-card-wood p-5 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="text-amber-800 font-black text-sm font-mono px-2.5 py-1.5 bg-amber-100 border border-amber-300 rounded-lg">PDF</span>
+            <div>
+              <div class="font-bold text-stone-900 text-base sm:text-lg">第四節學習單</div>
+              <div class="text-xs sm:text-sm text-stone-500">實驗記錄與反思・套環實戰</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <a href="worksheet_3.jpg" target="_blank" class="text-sm font-bold text-amber-800 hover:text-amber-600 transition-colors flex items-center gap-1">
+              開啟 ↗
+            </a>
+            <a href="worksheet_3.jpg" download="第四節學習單_實驗結果評估表.jpg" class="text-sm font-bold text-amber-800 hover:text-amber-600 transition-colors flex items-center gap-1">
+              下載 ↓
+            </a>
+          </div>
+        </div>
+
+        <!-- 3. 學習單 1：電腦模擬實驗紀錄表 (A) -->
+        <div class="download-card-wood p-5 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="text-amber-800 font-black text-sm font-mono px-2.5 py-1.5 bg-amber-100 border border-amber-300 rounded-lg">IMG</span>
+            <div>
+              <div class="font-bold text-stone-900 text-base sm:text-lg">電腦模擬紀錄表 (一)</div>
+              <div class="text-xs sm:text-sm text-stone-500">拋射距離影響因素分析單</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <a href="worksheet_2.jpg" target="_blank" class="text-sm font-bold text-amber-800 hover:text-amber-600 transition-colors flex items-center gap-1">
+              開啟 ↗
+            </a>
+            <a href="worksheet_2.jpg" download="學習單_電腦模擬紀錄表_1.jpg" class="text-sm font-bold text-amber-800 hover:text-amber-600 transition-colors flex items-center gap-1">
+              下載 ↓
+            </a>
+          </div>
+        </div>
+
+        <!-- 4. 學習單 2：電腦模擬實驗紀錄表 (B) -->
+        <div class="download-card-wood p-5 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <span class="text-amber-800 font-black text-sm font-mono px-2.5 py-1.5 bg-amber-100 border border-amber-300 rounded-lg">IMG</span>
+            <div>
+              <div class="font-bold text-stone-900 text-base sm:text-lg">電腦模擬紀錄表 (二)</div>
+              <div class="text-xs sm:text-sm text-stone-500">5檔角度與6檔臂長距離矩陣</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <a href="worksheet_1.jpg" target="_blank" class="text-sm font-bold text-amber-800 hover:text-amber-600 transition-colors flex items-center gap-1">
+              開啟 ↗
+            </a>
+            <a href="worksheet_1.jpg" download="學習單_電腦模擬紀錄表_2.jpg" class="text-sm font-bold text-amber-800 hover:text-amber-600 transition-colors flex items-center gap-1">
+              下載 ↓
+            </a>
+          </div>
+        </div>
+
+        <!-- 5. 實裝雷切圖稿 (SVG 格式，依需求刪除另外兩個，此處直接提供開啟與下載) -->
+        <div class="download-card-wood p-5 flex items-center justify-between gap-4 md:col-span-2 border-2 border-amber-400 bg-amber-50/40">
+          <div class="flex items-center gap-4">
+            <span class="text-amber-900 font-black text-sm font-mono px-3 py-1.5 bg-amber-200 border border-amber-400 rounded-lg">SVG</span>
+            <div>
+              <div class="font-bold text-stone-900 text-base sm:text-lg flex items-center gap-2">
+                雷切圖稿：投石戰車組裝零件全圖
+                <span class="text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-0.5 rounded-full font-bold">正式檔已就緒</span>
+              </div>
+              <div class="text-xs sm:text-sm text-stone-600">A4 橫式・3 公釐椴木板雷射切割零件圖（點擊開啟即可預覽組裝零件輪廓）</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <a href="catapult_parts.svg" target="_blank" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-1">
+              開啟預覽 ↗
+            </a>
+            <a href="catapult_laser_cut.svg" download="投石戰車_雷切圖稿.svg" class="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-amber-200 border border-amber-400/40 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-1">
+              下載圖檔 ↓
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 雷切零件即時向量視覺化預覽卡片 (開啟直接可看見樣式) -->
+      <div class="mt-8 pt-6 border-t border-amber-200">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-base sm:text-lg font-bold text-amber-950 flex items-center gap-2">
+            <span>📐</span> 雷切零件版型即時預覽（A4 椴木板零件排版）
+          </h3>
+          <a href="catapult_parts.svg" target="_blank" class="text-xs sm:text-sm text-amber-800 hover:text-amber-600 font-bold">
+            全螢幕檢視 ↗
+          </a>
+        </div>
+        <div class="rounded-2xl border-2 border-amber-300 overflow-hidden bg-[#fdfaf5] p-3 shadow-inner">
+          <object data="catapult_parts.svg" type="image/svg+xml" class="w-full h-auto max-h-[360px] block mx-auto"></object>
+        </div>
+      </div>
+
+      <!-- 3張學習單實物預覽 -->
+      <div class="mt-10 pt-8 border-t border-amber-200">
+        <h3 class="text-base sm:text-lg font-bold text-amber-950 mb-4 flex items-center gap-2">
+          <span>🖼️</span> 學習單實物預覽（點擊可開啟原圖）
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <a href="worksheet_2.jpg" target="_blank" class="block group overflow-hidden rounded-xl border border-amber-200 bg-white p-2 hover:border-amber-500 hover:shadow-md transition-all">
+            <img src="worksheet_2.jpg" alt="學習單一" class="w-full h-auto rounded object-cover group-hover:scale-102 transition-transform" />
+            <div class="text-xs text-center text-stone-700 font-bold mt-2">學習單一：電腦模擬紀錄表</div>
+          </a>
+          <a href="worksheet_1.jpg" target="_blank" class="block group overflow-hidden rounded-xl border border-amber-200 bg-white p-2 hover:border-amber-500 hover:shadow-md transition-all">
+            <img src="worksheet_1.jpg" alt="學習單二" class="w-full h-auto rounded object-cover group-hover:scale-102 transition-transform" />
+            <div class="text-xs text-center text-stone-700 font-bold mt-2">學習單二：最佳拋射距離探究</div>
+          </a>
+          <a href="worksheet_3.jpg" target="_blank" class="block group overflow-hidden rounded-xl border border-amber-200 bg-white p-2 hover:border-amber-500 hover:shadow-md transition-all">
+            <img src="worksheet_3.jpg" alt="學習單三" class="w-full h-auto rounded object-cover group-hover:scale-102 transition-transform" />
+            <div class="text-xs text-center text-stone-700 font-bold mt-2">學習單三：實驗結果評估表</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= 網站頁尾 (嚴格揭露指定字句) ================= -->
+  <footer class="bg-[#26170d] text-amber-200/90 border-t-4 border-amber-700 py-12 px-4 mt-16">
+    <div class="max-w-7xl mx-auto text-center space-y-5">
+      <div class="flex items-center justify-center gap-2 text-amber-300 font-bold text-xl">
+        <span>🪵</span>
+        <span>國小科技資訊教育教案成果展示網</span>
+      </div>
+
+      <!-- 嚴格依據使用者指定文字呈現 -->
+      <div class="max-w-3xl mx-auto py-4 px-6 rounded-2xl bg-black/50 border border-amber-600/40 text-amber-100 text-sm sm:text-base font-medium leading-relaxed shadow-inner">
+        本網站為115學年度第一學期科技領域教材教法課程成果，由林佾緯、蒙泓文、劉智翰、曾熠鳴等人共同設計製作；指導老師：顏榮泉老師
+      </div>
+
+      <div class="text-xs text-amber-300/60 font-mono">
+        © 115學年度 科技領域教材教法 ｜ 投石戰車教學專案
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
